@@ -1,0 +1,105 @@
+/* =====================================================
+   main.css
+   SportsPro Technical Support - Assignment 2
+   ===================================================== */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, Arial, sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 40px;
+    color: #333;
+}
+
+/* Centered card container */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+h1 {
+    margin: 0 0 10px 0;
+    font-size: 34px;
+    color: #2c3e50;
+}
+
+.status {
+    margin: 10px 0 25px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Navigation links */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+li a::before {
+    content: "• ";
+    color: #8aa0b4;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+}
+
+th {
+    background-color: #f0f3f7;
+    text-align: left;
+}
+
+/* Forms */
+input[type="text"], select, textarea {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #cfd8e3;
+    border-radius: 6px;
+}
+
+textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+button {
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+}
+
+button:hover {
+    background-color: #1558b0;
+}
