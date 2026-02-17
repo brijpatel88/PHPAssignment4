@@ -1,7 +1,6 @@
 <?php
 // index.php (ROOT)
-// Purpose: Home page for Assignment 2
-// This page links to all completed modules (Projects 6-1 to 6-5)
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,24 +8,53 @@
     <meta charset="UTF-8">
     <title>SportsPro Technical Support</title>
 
-    <!-- Shared CSS file -->
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Your existing CSS (keep it; Bootstrap will still work) -->
     <link rel="stylesheet" href="css/main.css?v=1">
 </head>
-<body>
-<div class="container">
 
-<h1>SportsPro Technical Support</h1>
+<body class="bg-light">
 
-<p class="status">Project is running ✅</p>
+<div class="container py-5">
 
-<ul>
-    <li><a href="product_manager">Manage Products</a></li>
-    <li><a href="technician_manager">Manage Technicians</a></li>
-    <li><a href="customer_manager">Manage Customers</a></li>
-    <li><a href="product_register">Register Product</a></li>
-    <li><a href="incident_create">Create Incident</a></li>
-</ul>
+    <!-- Card layout for a cleaner home screen -->
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+
+            <h1 class="mb-2">SportsPro Technical Support</h1>
+
+            <div class="alert alert-success d-inline-block py-2 px-3 mb-4" role="alert">
+                Project is running ✅
+            </div>
+
+            <!-- Bootstrap list group for menu -->
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action" href="product_manager">
+                    Manage Products
+                </a>
+                <a class="list-group-item list-group-item-action" href="technician_manager">
+                    Manage Technicians
+                </a>
+                <a class="list-group-item list-group-item-action" href="customer_manager">
+                    Manage Customers
+                </a>
+                <a class="list-group-item list-group-item-action" href="product_register">
+                    Register Product
+                </a>
+                <a class="list-group-item list-group-item-action" href="incident_create">
+                    Create Incident
+                </a>
+            </div>
+
+        </div>
+    </div>
 
 </div>
+
+<!-- Bootstrap JS Bundle (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

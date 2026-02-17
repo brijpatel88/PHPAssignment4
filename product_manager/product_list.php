@@ -1,55 +1,93 @@
 <?php
 // product_manager/product_list.php
-// Purpose: View for Product List page
-// Project 10-1: display release date as mm-dd-yyyy with no leading zeros and no time
+// Purpose: Displays list of products
+// - Formats release date (n-j-Y)
+// - Allows deleting a product
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Product List</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Your custom CSS (optional but kept for consistency) -->
     <link rel="stylesheet" href="../css/main.css?v=1">
 </head>
-<body>
-<div class="container">
 
-<h1>Product List</h1>
+<body class="bg-light">
 
-<p><a href="index.php?action=show_add_form">Add Product</a> | <a href="../index.php">Home</a></p>
+<div class="container py-4">
 
-<table>
-    <tr>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Version</th>
-        <th>Release Date</th>
-        <th>Action</th>
-    </tr>
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-    <?php foreach ($products as $product): ?>
-        <?php
-        // releaseDate might be stored as DATE (Y-m-d) or DATETIME.
-        // We convert to a timestamp safely and format as n-j-Y (no leading zeros).
-        $ts = strtotime($product['releaseDate']);
-        $formattedDate = $ts ? date('n-j-Y', $ts) : '';
-        ?>
-        <tr>
-            <td><?php echo htmlspecialchars($product['productCode']); ?></td>
-            <td><?php echo htmlspecialchars($product['name']); ?></td>
-            <td><?php echo htmlspecialchars($product['version']); ?></td>
-            <td><?php echo htmlspecialchars($formattedDate); ?></td>
-            <td>
-                <form action="index.php" method="post" style="margin:0;">
-                    <input type="hidden" name="action" value="delete_product">
-                    <input type="hidden" name="code" value="<?php echo htmlspecialchars($product['productCode']); ?>">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-    <?php endforeach; ?>
+            <h1 class="mb-3">Product List</h1>
 
-</table>
+            <!-- Navigation buttons -->
+            <div class="mb-3">
+                <a href="index.php?action=show_add_form" class="btn btn-primary me-2">
+                    Add Product
+                </a>
+                <a href="../index.php" class="btn btn-outline-secondary">
+                    Home
+                </a>
+            </div>
+
+            <!-- Bootstrap table styling -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Version</th>
+                            <th>Release Date</th>
+                            <th style="width: 120px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($products as $product): ?>
+                        <?php
+                        // Convert releaseDate to timestamp
+                        $ts = strtotime($product['releaseDate']);
+
+                        // Format as month-day-year without leading zeros
+                        $formattedDate = $ts ? date('n-j-Y', $ts) : '';
+                        ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($product['productCode']); ?></td>
+                            <td><?php echo htmlspecialchars($product['name']); ?></td>
+                            <td><?php echo htmlspecialchars($product['version']); ?></td>
+                            <td><?php echo htmlspecialchars($formattedDate); ?></td>
+                            <td>
+                                <!-- Delete form posts back to controller -->
+                                <form action="index.php" method="post">
+                                    <input type="hidden" name="action" value="delete_product">
+                                    <input type="hidden" name="code"
+                                           value="<?php echo htmlspecialchars($product['productCode']); ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
 
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

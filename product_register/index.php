@@ -1,8 +1,8 @@
 <?php
 // product_register/index.php
-// Purpose: Customer "login" page for Project 6-4 (enter email to continue)
+// Purpose: Customer enters email to start product registration.
+// This posts the email to register_product.php.
 
-// Show errors while we build (remove later if you want)
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 ?>
@@ -10,21 +10,52 @@ error_reporting(E_ALL);
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>Register Product - Customer Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional: keep custom CSS -->
     <link rel="stylesheet" href="../css/main.css?v=1">
-    <title>Customer Login</title>
 </head>
-<body>
 
-<h1>Customer Login</h1>
+<body class="bg-light">
 
-<!-- Customer enters email to start product registration -->
-<form action="register_product.php" method="post">
-    <label>Email:</label>
-    <input type="text" name="email">
-    <button type="submit">Login</button>
-</form>
+<div class="container py-5">
 
-<p><a href="/PHPAssignment2">Home</a></p>
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+
+            <h1 class="mb-4">Register Product - Customer Login</h1>
+
+            <!-- Login form -->
+            <form action="register_product.php" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text"
+                           name="email"
+                           class="form-control"
+                           placeholder="Enter customer email">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Login
+                </button>
+
+                <a href="../index.php" class="btn btn-link ms-2">
+                    Home
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

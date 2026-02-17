@@ -1,6 +1,9 @@
 <?php
 // customer_manager/customer_select.php
-// Purpose: loads one customer by ID and shows update form
+// Purpose:
+// - Load one customer by customerID
+// - Display update form (POST -> customer_update.php)
+// - Country dropdown loads from countries table
 
 require_once('../model/database.php');
 require_once('../model/customer_db.php');
@@ -22,63 +25,127 @@ if (!$customer) {
     exit();
 }
 
-$countries = get_countries(); // for dropdown list
-
+$countries = get_countries(); // dropdown options
 ?>
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>View/Update Customer</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional: custom CSS -->
+    <link rel="stylesheet" href="../css/main.css?v=1">
 </head>
-<body>
 
-<h1>View/Update Customer</h1>
+<body class="bg-light">
 
-<!-- Form posts updated data to customer_update.php -->
-<form action="customer_update.php" method="post">
-    <input type="hidden" name="customerID" value="<?php echo (int)$customer['customerID']; ?>">
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-    First Name:
-    <input type="text" name="firstName" value="<?php echo htmlspecialchars($customer['firstName']); ?>"><br><br>
+            <h1 class="mb-4">View/Update Customer</h1>
 
-    Last Name:
-    <input type="text" name="lastName" value="<?php echo htmlspecialchars($customer['lastName']); ?>"><br><br>
+            <!-- Update form -->
+            <form action="customer_update.php" method="post">
 
-    Address:
-    <input type="text" name="address" value="<?php echo htmlspecialchars($customer['address']); ?>"><br><br>
+                <!-- Customer ID is required for the update -->
+                <input type="hidden" name="customerID" value="<?php echo (int)$customer['customerID']; ?>">
 
-    City:
-    <input type="text" name="city" value="<?php echo htmlspecialchars($customer['city']); ?>"><br><br>
+                <div class="row g-3">
 
-    State:
-    <input type="text" name="state" value="<?php echo htmlspecialchars($customer['state']); ?>"><br><br>
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="firstName" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['firstName']); ?>">
+                    </div>
 
-    Postal Code:
-    <input type="text" name="postalCode" value="<?php echo htmlspecialchars($customer['postalCode']); ?>"><br><br>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="lastName" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['lastName']); ?>">
+                    </div>
 
-    Country Code:
-    <select name="countryCode">
-        <?php foreach ($countries as $country): ?>
-            <option value="<?php echo htmlspecialchars($country['countryCode']); ?>"
-                <?php if ($country['countryCode'] === $customer['countryCode']) echo 'selected'; ?>>
-                <?php echo htmlspecialchars($country['countryName']); ?>
-            </option>
-        <?php endforeach; ?>
-    </select><br><br>
+                    <div class="col-12">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="address" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['address']); ?>">
+                    </div>
 
-    Phone:
-    <input type="text" name="phone" value="<?php echo htmlspecialchars($customer['phone']); ?>"><br><br>
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['city']); ?>">
+                    </div>
 
-    Email:
-    <input type="text" name="email" value="<?php echo htmlspecialchars($customer['email']); ?>"><br><br>
+                    <div class="col-md-3">
+                        <label class="form-label">State</label>
+                        <input type="text" name="state" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['state']); ?>">
+                    </div>
 
-    Password:
-    <input type="text" name="password" value="<?php echo htmlspecialchars($customer['password']); ?>"><br><br>
+                    <div class="col-md-3">
+                        <label class="form-label">Postal Code</label>
+                        <input type="text" name="postalCode" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['postalCode']); ?>">
+                    </div>
 
-    <button type="submit">Update Customer</button>
-</form>
+                    <div class="col-md-6">
+                        <label class="form-label">Country</label>
+                        <select name="countryCode" class="form-select">
+                            <?php foreach ($countries as $country): ?>
+                                <option value="<?php echo htmlspecialchars($country['countryCode']); ?>"
+                                    <?php if ($country['countryCode'] === $customer['countryCode']) echo 'selected'; ?>>
+                                    <?php echo htmlspecialchars($country['countryName']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-<p><a href="index.php">Back</a></p>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['phone']); ?>">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="text" name="email" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['email']); ?>">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        <input type="text" name="password" class="form-control"
+                               value="<?php echo htmlspecialchars($customer['password']); ?>">
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Update Customer
+                    </button>
+
+                    <a href="index.php" class="btn btn-outline-secondary ms-2">
+                        Back
+                    </a>
+
+                    <a href="../index.php" class="btn btn-link ms-2">
+                        Home
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -1,10 +1,10 @@
 <?php
 // product_register/register_product.php
 // Purpose:
-// 1) Receive email from login (POST) OR redirect (GET)
-// 2) Find the customer by email
-// 3) Show a dropdown of ALL products
-// 4) Show a success/error message after registering
+// - Receive email (POST from login OR GET from redirect)
+// - Load customer by email
+// - Show product dropdown and allow registration
+// - Show optional success/error message after redirect
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -13,20 +13,20 @@ require_once('../model/database.php');
 require_once('../model/customer_db.php');
 require_once('../model/product_db.php');
 
-// Get email safely (filter_input can return null, so cast to string)
+// Get email safely (POST first, then GET after redirects)
 $email = trim((string) filter_input(INPUT_POST, 'email'));
 if ($email === '') {
     $email = trim((string) filter_input(INPUT_GET, 'email'));
 }
 
-// If email is still empty, stop with an error
+// Email is required to identify customer
 if ($email === '') {
     $error_message = 'Please enter an email address.';
     include('../errors/error.php');
     exit();
 }
 
-// Find customer by email
+// Load customer record by email
 $customer = get_customer_by_email($email);
 if (!$customer) {
     $error_message = 'No customer found with that email.';
@@ -34,10 +34,10 @@ if (!$customer) {
     exit();
 }
 
-// Get all products for dropdown
+// Load products for dropdown
 $products = get_products();
 
-// Optional message from redirect (avoid undefined variable warning)
+// Optional message from redirect
 $message = trim((string) filter_input(INPUT_GET, 'message'));
 ?>
 <!DOCTYPE html>
@@ -45,42 +45,78 @@ $message = trim((string) filter_input(INPUT_GET, 'message'));
 <head>
     <meta charset="UTF-8">
     <title>Register Product</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional: keep your custom CSS -->
+    <link rel="stylesheet" href="../css/main.css?v=1">
 </head>
-<body>
 
-<h1>Register Product</h1>
+<body class="bg-light">
 
-<p>
-    Logged in as:
-    <strong><?php echo htmlspecialchars($customer['firstName'] . ' ' . $customer['lastName']); ?></strong>
-    (<?php echo htmlspecialchars($customer['email']); ?>)
-</p>
+<div class="container py-4">
 
-<?php if ($message !== ''): ?>
-    <p><strong><?php echo htmlspecialchars($message); ?></strong></p>
-<?php endif; ?>
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-<form action="register_product_action.php" method="post">
-    <!-- Needed to insert into registrations -->
-    <input type="hidden" name="customerID" value="<?php echo (int)$customer['customerID']; ?>">
+            <h1 class="mb-3">Register Product</h1>
 
-    <!-- Keep email so action page can redirect back here -->
-    <input type="hidden" name="email" value="<?php echo htmlspecialchars($customer['email']); ?>">
+            <!-- Customer summary -->
+            <div class="mb-3">
+                <span class="text-muted">Logged in as:</span>
+                <strong><?php echo htmlspecialchars($customer['firstName'] . ' ' . $customer['lastName']); ?></strong>
+                <span class="text-muted">(<?php echo htmlspecialchars($customer['email']); ?>)</span>
+            </div>
 
-    <label>Product:</label>
-    <select name="productID">
-        <?php foreach ($products as $p): ?>
-            <option value="<?php echo (int)$p['productID']; ?>">
-                <?php echo htmlspecialchars($p['name']); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+            <!-- Optional message shown after redirects -->
+            <?php if ($message !== ''): ?>
+                <div class="alert alert-info" role="alert">
+                    <?php echo htmlspecialchars($message); ?>
+                </div>
+            <?php endif; ?>
 
-    <button type="submit">Register Product</button>
-</form>
+            <!-- Register Product form -->
+            <form action="register_product_action.php" method="post">
 
-<p><a href="index.php">Logout</a></p>
-<p><a href="/PHPAssignment2">Home</a></p>
+                <!-- Hidden values needed to insert + redirect back -->
+                <input type="hidden" name="customerID" value="<?php echo (int)$customer['customerID']; ?>">
+                <input type="hidden" name="email" value="<?php echo htmlspecialchars($customer['email']); ?>">
+
+                <!-- Product dropdown -->
+                <div class="mb-4">
+                    <label class="form-label">Product</label>
+                    <select name="productID" class="form-select">
+                        <?php foreach ($products as $p): ?>
+                            <option value="<?php echo (int)$p['productID']; ?>">
+                                <?php echo htmlspecialchars($p['name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <button type="submit" class="btn btn-primary">
+                    Register Product
+                </button>
+
+                <a href="index.php" class="btn btn-outline-secondary ms-2">
+                    Logout
+                </a>
+
+                <a href="../index.php" class="btn btn-link ms-2">
+                    Home
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

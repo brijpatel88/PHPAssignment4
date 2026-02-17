@@ -1,27 +1,52 @@
 <?php
 // customer_manager/index.php
-// Purpose: simple entry page that shows the search form
-
+// Purpose: Entry page to search customers by last name (GET -> customer_search.php)
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/main.css?v=1">
     <title>Customer Manager</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Optional: custom CSS -->
+    <link rel="stylesheet" href="../css/main.css?v=1">
 </head>
-<body>
 
-<h1>Search Customers</h1>
+<body class="bg-light">
 
-<!-- This form sends last name to customer_search.php -->
-<form action="customer_search.php" method="get">
-    Last Name:
-    <input type="text" name="lastName">
-    <button type="submit">Search</button>
-</form>
+<div class="container py-5">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
 
-<p><a href="/PHPAssignment2">Home</a></p>
+            <h1 class="mb-4">Search Customers</h1>
+
+            <!-- Search form -->
+            <form action="customer_search.php" method="get" class="row g-2 align-items-end">
+                <div class="col-sm-6">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="lastName" class="form-control" placeholder="Enter last name">
+                </div>
+
+                <div class="col-sm-6">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+
+                    <a href="../index.php" class="btn btn-link ms-2">
+                        Home
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
