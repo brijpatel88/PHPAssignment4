@@ -149,6 +149,20 @@ No business logic was modified during UI enhancement.
 
 ⸻
 
+🎥 Project Demonstration Video
+
+This video demonstrates the complete functionality of the SportsPro Technical Support System including:
+• Admin Dashboard
+• Product Management
+• Customer & Technician Management
+• Product Registration (Customer)
+• Incident Creation & Assignment Workflow
+
+🔗 Watch here:
+https://youtu.be/xPUgDYFs2Ys
+
+⸻
+
 # 📷 Screenshots
 
 ## 1. Home Page

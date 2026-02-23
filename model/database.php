@@ -1,21 +1,18 @@
 <?php
-// This file creates the database connection
-// It runs ONCE and is reused everywhere
+// model/database.php
+// Purpose: Create the PDO database connection (shared)
+
+require_once(__DIR__ . '/../util/db_error.php');
 
 $dsn = 'mysql:host=localhost;dbname=tech_support;charset=utf8mb4';
-$username = 'root';   // XAMPP default
-$password = '';       // empty password by default
+$username = 'root';
+$password = '';
 
 try {
-    // Create PDO connection
     $db = new PDO($dsn, $username, $password);
-
-    // Show errors if something breaks (dev mode)
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 } catch (PDOException $e) {
-    // If DB connection fails, show error page
-    $error_message = 'Database error: ' . $e->getMessage();
-    include('../errors/error.php');
-    exit();
+    // Use the central error handler (Project 19-1 requirement)
+    show_database_error('Unable to connect to the database.', $e);
 }

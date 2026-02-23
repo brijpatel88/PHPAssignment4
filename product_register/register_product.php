@@ -1,122 +1,84 @@
 <?php
 // product_register/register_product.php
 // Purpose:
-// - Receive email (POST from login OR GET from redirect)
-// - Load customer by email
+// - Customer must be logged in
 // - Show product dropdown and allow registration
 // - Show optional success/error message after redirect
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+require_once('../util/require_customer_login.php');
+require_customer_login('../');
+
 require_once('../model/database.php');
 require_once('../model/customer_db.php');
 require_once('../model/product_db.php');
 
-// Get email safely (POST first, then GET after redirects)
-$email = trim((string) filter_input(INPUT_POST, 'email'));
-if ($email === '') {
-    $email = trim((string) filter_input(INPUT_GET, 'email'));
-}
+$pageTitle = "Register Product";
+$basePath  = "../";
+include('../includes/header.php');
 
-// Email is required to identify customer
-if ($email === '') {
-    $error_message = 'Please enter an email address.';
+$customerID = (int)($_SESSION['customer_id'] ?? 0);
+if ($customerID <= 0) {
+    $error_message = 'Customer session missing. Please login again.';
     include('../errors/error.php');
     exit();
 }
 
-// Load customer record by email
-$customer = get_customer_by_email($email);
+$customer = get_customer($customerID);
 if (!$customer) {
-    $error_message = 'No customer found with that email.';
+    $error_message = 'Customer not found. Please login again.';
     include('../errors/error.php');
     exit();
 }
 
-// Load products for dropdown
 $products = get_products();
-
-// Optional message from redirect
-$message = trim((string) filter_input(INPUT_GET, 'message'));
+$message  = trim((string) filter_input(INPUT_GET, 'message'));
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Register Product</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Optional: keep your custom CSS -->
-    <link rel="stylesheet" href="../css/main.css?v=1">
-</head>
-
-<body class="bg-light">
-
-<div class="container py-4">
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-            <h1 class="mb-3">Register Product</h1>
-
-            <!-- Customer summary -->
-            <div class="mb-3">
-                <span class="text-muted">Logged in as:</span>
-                <strong><?php echo htmlspecialchars($customer['firstName'] . ' ' . $customer['lastName']); ?></strong>
-                <span class="text-muted">(<?php echo htmlspecialchars($customer['email']); ?>)</span>
-            </div>
-
-            <!-- Optional message shown after redirects -->
-            <?php if ($message !== ''): ?>
-                <div class="alert alert-info" role="alert">
-                    <?php echo htmlspecialchars($message); ?>
-                </div>
-            <?php endif; ?>
-
-            <!-- Register Product form -->
-            <form action="register_product_action.php" method="post">
-
-                <!-- Hidden values needed to insert + redirect back -->
-                <input type="hidden" name="customerID" value="<?php echo (int)$customer['customerID']; ?>">
-                <input type="hidden" name="email" value="<?php echo htmlspecialchars($customer['email']); ?>">
-
-                <!-- Product dropdown -->
-                <div class="mb-4">
-                    <label class="form-label">Product</label>
-                    <select name="productID" class="form-select">
-                        <?php foreach ($products as $p): ?>
-                            <option value="<?php echo (int)$p['productID']; ?>">
-                                <?php echo htmlspecialchars($p['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Buttons -->
-                <button type="submit" class="btn btn-primary">
-                    Register Product
-                </button>
-
-                <a href="index.php" class="btn btn-outline-secondary ms-2">
-                    Logout
-                </a>
-
-                <a href="../index.php" class="btn btn-link ms-2">
-                    Home
-                </a>
-
-            </form>
-
-        </div>
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="mb-0">Register Product</h1>
+    <div class="text-muted mt-1">
+      Logged in as:
+      <strong><?php echo htmlspecialchars($customer['firstName'] . ' ' . $customer['lastName']); ?></strong>
+      (<?php echo htmlspecialchars($customer['email']); ?>)
     </div>
+  </div>
 
+  <div class="d-flex gap-2">
+    <a href="../customer_portal/index.php" class="btn btn-outline-secondary">Back</a>
+    <a href="../auth/logout.php" class="btn btn-outline-danger">Logout</a>
+  </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php if ($message !== ''): ?>
+  <div class="alert alert-info" role="alert">
+    <?php echo htmlspecialchars($message); ?>
+  </div>
+<?php endif; ?>
 
-</body>
-</html>
+<form action="register_product_action.php" method="post" class="row g-3">
+
+  <div class="col-md-8">
+    <label class="form-label">Product</label>
+    <select name="productID" class="form-select" required>
+      <option value="">Select a product...</option>
+      <?php foreach ($products as $p): ?>
+        <option value="<?php echo (int)$p['productID']; ?>">
+          <?php echo htmlspecialchars($p['name']); ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+
+  <div class="col-md-4 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary w-100">
+      Register Product
+    </button>
+  </div>
+
+</form>
+
+<?php include('../includes/footer.php'); ?>

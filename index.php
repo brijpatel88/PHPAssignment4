@@ -1,60 +1,80 @@
 <?php
 // index.php (ROOT)
+// Purpose: Admin dashboard landing page
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ✅ If not admin, go to portal (admin tab)
+if (empty($_SESSION['is_admin'])) {
+    header('Location: auth/portal.php?tab=admin');
+    exit();
+}
+
+$pageTitle = "Dashboard";
+$basePath  = ""; // root
+include('includes/header.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>SportsPro Technical Support</title>
 
-    <!-- Bootstrap CSS (CDN) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-0">Dashboard</h1>
+        <div class="text-muted mt-1">SportsPro Technical Support</div>
+    </div>
 
-    <!-- Your existing CSS (keep it; Bootstrap will still work) -->
-    <link rel="stylesheet" href="css/main.css?v=1">
-</head>
+    <span class="badge text-bg-success px-3 py-2">
+        Project is running ✅
+    </span>
+</div>
 
-<body class="bg-light">
+<div class="row g-3">
 
-<div class="container py-5">
+    <!-- Manage Products -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="border rounded-4 p-4 bg-white h-100">
+            <h5 class="mb-2">Manage Products</h5>
+            <p class="text-muted mb-3">Add, view, and delete products.</p>
+            <a href="product_manager/index.php" class="btn btn-primary btn-sm">Open</a>
+        </div>
+    </div>
 
-    <!-- Card layout for a cleaner home screen -->
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
+    <!-- Manage Technicians -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="border rounded-4 p-4 bg-white h-100">
+            <h5 class="mb-2">Manage Technicians</h5>
+            <p class="text-muted mb-3">View technicians, add new, delete.</p>
+            <a href="technician_manager/index.php" class="btn btn-primary btn-sm">Open</a>
+        </div>
+    </div>
 
-            <h1 class="mb-2">SportsPro Technical Support</h1>
+    <!-- Manage Customers -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="border rounded-4 p-4 bg-white h-100">
+            <h5 class="mb-2">Manage Customers</h5>
+            <p class="text-muted mb-3">Search customers and update details.</p>
+            <a href="customer_manager/index.php" class="btn btn-primary btn-sm">Open</a>
+        </div>
+    </div>
 
-            <div class="alert alert-success d-inline-block py-2 px-3 mb-4" role="alert">
-                Project is running ✅
-            </div>
+    <!-- Incident Manager -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="border rounded-4 p-4 bg-white h-100">
+            <h5 class="mb-2">Incident Manager</h5>
+            <p class="text-muted mb-3">Assign technicians and manage incidents.</p>
+            <a href="incident_manager/index.php" class="btn btn-primary btn-sm">Open</a>
+        </div>
+    </div>
 
-            <!-- Bootstrap list group for menu -->
-            <div class="list-group">
-                <a class="list-group-item list-group-item-action" href="product_manager">
-                    Manage Products
-                </a>
-                <a class="list-group-item list-group-item-action" href="technician_manager">
-                    Manage Technicians
-                </a>
-                <a class="list-group-item list-group-item-action" href="customer_manager">
-                    Manage Customers
-                </a>
-                <a class="list-group-item list-group-item-action" href="product_register">
-                    Register Product
-                </a>
-                <a class="list-group-item list-group-item-action" href="incident_create">
-                    Create Incident
-                </a>
-            </div>
-
+    <!-- Display Incidents -->
+     <div class="col-12 col-md-6 col-xl-4">
+        <div class="border rounded-4 p-4 bg-white h-100">
+            <h5 class="mb-2">Display Incidents</h5>
+            <p class="text-muted mb-3">View assigned and unassigned incidents.</p>
+            <a href="incident_display/index.php" class="btn btn-primary btn-sm">Open</a>
         </div>
     </div>
 
 </div>
 
-<!-- Bootstrap JS Bundle (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+<?php include('includes/footer.php'); ?>

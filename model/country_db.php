@@ -1,24 +1,24 @@
 <?php
 // model/country_db.php
-// Purpose: Retrieve countries from the database
-// Used for dropdown lists (Assignment 3 – Step 7-1)
+// Purpose: Retrieve countries for dropdown lists
+
+require_once(__DIR__ . '/../util/db_error.php');
 
 function get_countries(): array
 {
     global $db;
 
-    // Select country code and name for dropdown
-    $query = 'SELECT countryCode, countryName
-              FROM countries
-              ORDER BY countryName';
+    try {
+        $query = 'SELECT countryCode, countryName
+                  FROM countries
+                  ORDER BY countryName';
 
-    $statement = $db->prepare($query);
-    $statement->execute();
+        $statement = $db->prepare($query);
+        $statement->execute();
 
-    // Returns array like:
-    // [
-    //   ['countryCode' => 'CA', 'countryName' => 'Canada'],
-    //   ['countryCode' => 'US', 'countryName' => 'United States']
-    // ]
-    return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        show_database_error('Unable to load country list.', $e);
+    }
 }

@@ -6,6 +6,8 @@
 
 require_once('../model/database.php');
 require_once('../model/product_db.php');
+require_once('../util/require_login.php');
+require_login('../');
 
 // Get action from POST first (form submits), otherwise GET (links)
 $action = filter_input(INPUT_POST, 'action');

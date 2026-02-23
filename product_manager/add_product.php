@@ -1,6 +1,8 @@
 <?php
 require_once('../model/database.php');
 require_once('../model/product_db.php');
+require_once('../util/require_login.php');
+require_login('../');
 
 // Get form values
 $code = trim($_POST['code']);

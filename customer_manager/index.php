@@ -1,52 +1,41 @@
 <?php
 // customer_manager/index.php
-// Purpose: Entry page to search customers by last name (GET -> customer_search.php)
+// Purpose: Entry page to search customers by last name + Add Customer button
+
+require_once('../util/require_login.php');
+require_login('../'); // must run BEFORE any HTML output
+
+$pageTitle = "Customer Manager";
+$basePath  = "../";
+include('../includes/header.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Customer Manager</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <h1 class="mb-0">Search Customers</h1>
 
-    <!-- Optional: custom CSS -->
-    <link rel="stylesheet" href="../css/main.css?v=1">
-</head>
+    <div class="d-flex gap-2">
+        <!-- ✅ Project 20-1: Add Customer -->
+        <a href="customer_select.php?action=add" class="btn btn-primary">
+            Add Customer
+        </a>
 
-<body class="bg-light">
-
-<div class="container py-5">
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-
-            <h1 class="mb-4">Search Customers</h1>
-
-            <!-- Search form -->
-            <form action="customer_search.php" method="get" class="row g-2 align-items-end">
-                <div class="col-sm-6">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" name="lastName" class="form-control" placeholder="Enter last name">
-                </div>
-
-                <div class="col-sm-6">
-                    <button type="submit" class="btn btn-primary">
-                        Search
-                    </button>
-
-                    <a href="../index.php" class="btn btn-link ms-2">
-                        Home
-                    </a>
-                </div>
-            </form>
-
-        </div>
+        <a href="../index.php" class="btn btn-outline-secondary">
+            Home
+        </a>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<form action="customer_search.php" method="get" class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Last Name</label>
+        <input type="text" name="lastName" class="form-control" placeholder="Enter last name">
+    </div>
 
-</body>
-</html>
+    <div class="col-md-6 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+</form>
+
+<?php include('../includes/footer.php'); ?>

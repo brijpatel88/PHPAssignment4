@@ -1,61 +1,42 @@
 <?php
 // product_register/index.php
-// Purpose: Customer enters email to start product registration.
-// This posts the email to register_product.php.
+// Purpose: Customer entry page for product registration (customer must be logged in)
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+require_once('../util/require_customer_login.php');
+require_customer_login('../');
+
+$pageTitle = "Register Product";
+$basePath  = "../";
+include('../includes/header.php');
+
+$customerName  = $_SESSION['customer_name']  ?? 'Customer';
+$customerEmail = $_SESSION['customer_email'] ?? '';
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Register Product - Customer Login</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Optional: keep custom CSS -->
-    <link rel="stylesheet" href="../css/main.css?v=1">
-</head>
-
-<body class="bg-light">
-
-<div class="container py-5">
-
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-
-            <h1 class="mb-4">Register Product - Customer Login</h1>
-
-            <!-- Login form -->
-            <form action="register_product.php" method="post">
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="text"
-                           name="email"
-                           class="form-control"
-                           placeholder="Enter customer email">
-                </div>
-
-                <button type="submit" class="btn btn-primary">
-                    Login
-                </button>
-
-                <a href="../index.php" class="btn btn-link ms-2">
-                    Home
-                </a>
-
-            </form>
-
-        </div>
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="mb-0">Register Product</h1>
+    <div class="text-muted mt-1">
+      Logged in as <strong><?php echo htmlspecialchars($customerName); ?></strong>
+      <?php if ($customerEmail !== ''): ?>
+        (<?php echo htmlspecialchars($customerEmail); ?>)
+      <?php endif; ?>
     </div>
+  </div>
 
+  <div class="d-flex gap-2">
+    <a href="../customer_portal/index.php" class="btn btn-outline-secondary">Back</a>
+    <a href="../auth/logout.php" class="btn btn-outline-danger">Logout</a>
+  </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="alert alert-info">
+  Click Continue to register a product for your account.
+</div>
 
-</body>
-</html>
+<a class="btn btn-primary" href="register_product.php">Continue</a>
+
+<?php include('../includes/footer.php'); ?>

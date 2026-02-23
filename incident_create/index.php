@@ -1,58 +1,39 @@
 <?php
 // incident_create/index.php
-// Purpose: Simple "login" page where customer enters email to create an incident.
-// This posts the email to create_incident.php.
+// Purpose: Entry page for Create Incident (customer must be logged in)
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+require_once('../util/require_customer_login.php');
+require_customer_login('../'); // customer must be logged in
+
+$pageTitle = "Create Incident";
+$basePath  = "../";
+include('../includes/header.php');
+
+$customerName  = $_SESSION['customer_name']  ?? 'Customer';
+$customerEmail = $_SESSION['customer_email'] ?? '';
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Create Incident - Customer Login</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Optional: keep your custom CSS -->
-    <link rel="stylesheet" href="../css/main.css?v=1">
-</head>
-
-<body class="bg-light">
-
-<div class="container py-5">
-
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-
-            <h1 class="mb-4">Create Incident - Customer Login</h1>
-
-            <!-- Login form: posts email to create_incident.php -->
-            <form action="create_incident.php" method="post">
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="text" name="email" class="form-control" placeholder="Enter customer email">
-                </div>
-
-                <button type="submit" class="btn btn-primary">
-                    Login
-                </button>
-
-                <a href="../index.php" class="btn btn-link ms-2">
-                    Home
-                </a>
-
-            </form>
-
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h1 class="mb-0">Create Incident</h1>
+        <div class="text-muted mt-1">
+            Logged in as <strong><?php echo htmlspecialchars($customerName); ?></strong>
+            <?php if ($customerEmail !== ''): ?>
+                (<?php echo htmlspecialchars($customerEmail); ?>)
+            <?php endif; ?>
         </div>
     </div>
 
+    <a href="../customer_portal/index.php" class="btn btn-outline-secondary">Back</a>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="alert alert-info">
+    You are logged in. Click Continue to create an incident for your registered products.
+</div>
 
-</body>
-</html>
+<a class="btn btn-primary" href="create_incident.php">Continue</a>
+
+<?php include('../includes/footer.php'); ?>

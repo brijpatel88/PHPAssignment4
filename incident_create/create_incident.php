@@ -1,153 +1,99 @@
 <?php
 // incident_create/create_incident.php
-// Purpose:
-// - Receive customer email (login-style)
-// - Load customer by email
-// - Show incident creation form (product dropdown uses registered products)
+// Purpose: Customer creates an incident for one of their registered products
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+require_once('../util/require_customer_login.php');
+require_customer_login('../');
 
 require_once('../model/database.php');
 require_once('../model/customer_db.php');
 require_once('../model/product_db.php');
 
-// Get email safely (from POST on login OR GET after redirect)
-$email = trim((string) filter_input(INPUT_POST, 'email'));
-if ($email === '') {
-    $email = trim((string) filter_input(INPUT_GET, 'email'));
-}
+$pageTitle = "Create Incident";
+$basePath  = "../";
+include('../includes/header.php');
 
-// Email is required to identify the customer
-if ($email === '') {
-    $error_message = 'Please enter an email address.';
+$customerID = (int)($_SESSION['customer_id'] ?? 0);
+if ($customerID <= 0) {
+    $error_message = 'Customer session missing. Please login again.';
     include('../errors/error.php');
     exit();
 }
 
-// Load customer record from database
-$customer = get_customer_by_email($email);
+$customer = get_customer($customerID);
 if (!$customer) {
-    $error_message = 'No customer found with that email.';
+    $error_message = 'Customer not found. Please login again.';
     include('../errors/error.php');
     exit();
 }
 
-// Load products registered by this customer (for dropdown)
-$products = get_registered_products((int)$customer['customerID']);
-
-// Optional message shown after redirects (success or validation)
-$message = trim((string) filter_input(INPUT_GET, 'message'));
+$products = get_registered_products($customerID);
+$message  = trim((string) filter_input(INPUT_GET, 'message'));
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Create Incident</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Optional: keep your custom CSS -->
-    <link rel="stylesheet" href="../css/main.css?v=1">
-</head>
-
-<body class="bg-light">
-
-<div class="container py-4">
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-            <h1 class="mb-3">Create Incident</h1>
-
-            <!-- Customer summary -->
-            <div class="mb-3">
-                <span class="text-muted">Logged in as:</span>
-                <strong><?php echo htmlspecialchars($customer['firstName'] . ' ' . $customer['lastName']); ?></strong>
-                <span class="text-muted">(<?php echo htmlspecialchars($customer['email']); ?>)</span>
-            </div>
-
-            <!-- Optional status message -->
-            <?php if ($message !== ''): ?>
-                <div class="alert alert-info" role="alert">
-                    <?php echo htmlspecialchars($message); ?>
-                </div>
-            <?php endif; ?>
-
-            <?php if (count($products) === 0): ?>
-                <!-- If no registered products, show guidance instead of form -->
-                <div class="alert alert-warning" role="alert">
-                    <strong>No registered products found for this customer.</strong><br>
-                    Please register a product first, then come back to create an incident.
-                </div>
-
-                <a href="../product_register/index.php" class="btn btn-primary me-2">
-                    Go to Register Product
-                </a>
-                <a href="index.php" class="btn btn-outline-secondary me-2">
-                    Back
-                </a>
-                <a href="../index.php" class="btn btn-link">
-                    Home
-                </a>
-
-            <?php else: ?>
-
-                <!-- Incident creation form -->
-                <form action="create_incident_action.php" method="post">
-
-                    <!-- Hidden fields needed for insert + redirect back -->
-                    <input type="hidden" name="customerID" value="<?php echo (int)$customer['customerID']; ?>">
-                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($customer['email']); ?>">
-
-                    <!-- Product dropdown -->
-                    <div class="mb-3">
-                        <label class="form-label">Product</label>
-                        <select name="productID" class="form-select">
-                            <?php foreach ($products as $p): ?>
-                                <option value="<?php echo (int)$p['productID']; ?>">
-                                    <?php echo htmlspecialchars($p['name']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <!-- Title -->
-                    <div class="mb-3">
-                        <label class="form-label">Title</label>
-                        <input type="text" name="title" class="form-control">
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-4">
-                        <label class="form-label">Description</label>
-                        <textarea name="description" rows="6" class="form-control"></textarea>
-                    </div>
-
-                    <!-- Submit + navigation -->
-                    <button type="submit" class="btn btn-primary">
-                        Create Incident
-                    </button>
-
-                    <a href="index.php" class="btn btn-outline-secondary ms-2">
-                        Logout
-                    </a>
-
-                    <a href="../index.php" class="btn btn-link ms-2">
-                        Home
-                    </a>
-                </form>
-
-            <?php endif; ?>
-
-        </div>
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+  <div>
+    <h1 class="mb-0">Create Incident</h1>
+    <div class="text-muted mt-1">
+      Logged in as:
+      <strong><?php echo htmlspecialchars($customer['firstName'] . ' ' . $customer['lastName']); ?></strong>
+      (<?php echo htmlspecialchars($customer['email']); ?>)
     </div>
+  </div>
 
+  <div class="d-flex gap-2">
+    <a href="../customer_portal/index.php" class="btn btn-outline-secondary">Back</a>
+    <a href="../auth/logout.php" class="btn btn-outline-danger">Logout</a>
+  </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php if ($message !== ''): ?>
+  <div class="alert alert-info" role="alert">
+    <?php echo htmlspecialchars($message); ?>
+  </div>
+<?php endif; ?>
 
-</body>
-</html>
+<?php if (count($products) === 0): ?>
+  <div class="alert alert-warning" role="alert">
+    <strong>No registered products found.</strong><br>
+    Please register a product first, then come back here.
+  </div>
+
+  <a href="../product_register/index.php" class="btn btn-primary">Go to Register Product</a>
+
+<?php else: ?>
+
+  <form action="create_incident_action.php" method="post" class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Product</label>
+      <select name="productID" class="form-select" required>
+        <option value="">Select a product...</option>
+        <?php foreach ($products as $p): ?>
+          <option value="<?php echo (int)$p['productID']; ?>">
+            <?php echo htmlspecialchars($p['name']); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Title</label>
+      <input type="text" name="title" class="form-control" required>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Description</label>
+      <textarea name="description" rows="6" class="form-control" required></textarea>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Create Incident</button>
+    </div>
+  </form>
+
+<?php endif; ?>
+
+<?php include('../includes/footer.php'); ?>

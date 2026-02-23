@@ -1,6 +1,8 @@
 <?php
 require_once('../model/database.php');
 require_once('../model/product_db.php');
+require_once('../util/require_login.php');
+require_login('../');
 
 // Get product ID
 $product_id = filter_input(INPUT_POST, 'product_id', FILTER_VALIDATE_INT);
